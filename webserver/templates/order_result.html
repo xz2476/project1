@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<h1> Process and Order</h1>
+
+<p><a href="/Order">Back to Order Page </a></p>
+<p><a href="/">Back to Homepage </a></p>
+<br>
+
+<p><b>Customer who placed the order: </b></p>
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 6px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover{background-color:#f5f5f5}
+</style>
+<table>
+    <tr>
+      <th>Name </th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Address</th>
+    </tr>
+    {% for row in custin %}
+    <tr>
+      <td>{{ row[0]|tojson|safe }}</td>
+      <td>{{ row[1]|tojson|safe}}</td>
+      <td>{{ row[2]|tojson|safe}}</td>
+        <td>{{ row[3]}}</td>
+    </tr>
+{% endfor %}
+
+  </table>
+
+
+<p><b>Item was ordered: </b></p>
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 6px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover{background-color:#f5f5f5}
+</style>
+
+<table>
+    <tr>
+      <th>Quantity in stock </th>
+      <th>Warehouse ID</th>
+      <th>Warehouse Name</th>
+      <th>Warehouse manager</th>
+      <th>Contact Phone</th>
+      <th>Address </th>
+    </tr>
+    {% for row in storage %}
+    <tr>
+      <td>{{ row[0]|tojson|safe }}</td>
+      <td>{{ row[1]|tojson|safe}}</td>
+      <td>{{ row[2]|tojson|safe}}</td>
+      <td>{{ row[3]|tojson|safe}}
+      <td>{{ row[4]|tojson|safe}}</td>
+        <td>{{ row[5]}}</td>
+    </tr>
+{% endfor %}
+
+  </table>
+
+<h2>Process that Order: </h2>
+    <form method="POST" action="/Order/result/submit">
+        Customer id:    <input type = int name = 'custid' value = {{custid}}>
+        <br>
+        Order id: <input type="text" name = 'oid' value = {{oid}}>
+        <br>
+        Item id:    <input type = int name = "id" value = {{id}}>
+        <br>
+        Size:   <Input type = text name = "size" value = {{size}}>
+        <br>
+        color: <Input type= text name = "color" value = {{color}}>
+        <br>
+        Quantity: <input type= int name = "quantity" value= {{quantity}}>
+        <br>
+        Warehouse to ship(id): <input type = text name = 'wid'>
+        <br>
+        <input type="submit" value = "Submit">
+    </form>
+
+</html>

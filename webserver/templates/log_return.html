@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<h1>Log an return:</h1>
+
+<p><a href="/">Back to Homepage </a></p>
+
+<form method="post" action="/log_return/submit">
+    Order ID:
+    <select name = 'oid'>
+        {% for row in oids %}
+        <option value = {{row}}>{{row}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    Customer ID:
+    <select name = 'cid'>
+        {% for row in custlist %}
+        <option value={{row}}>{{row}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    Item ID:
+    <select name = 'id'>
+        {% for row in idlist %}
+        <option value={{row}}>{{row}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    Size:
+    <select name="size">
+        <option value = 'XS'>XS</option>
+        <option value = 'S'>S</option>
+        <option value = 'M'>M</option>
+        <option value = 'L'>L</option>
+    </select>
+    <br>
+    Color:
+    <select name = 'color'>
+        {% for row in col %}
+        <option value={{row}}>{{row}}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Submit">
+</form>
+</html>

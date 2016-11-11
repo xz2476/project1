@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<h1> Process an Order</h1>
+<p><a href="/Order">Back to "Order" Page </a></p>
+<p><a href="/">Back to Homepage </a></p>
+
+<p><b>Item you want to check: </b></p>
+
+<form method = "POST" action = "/Order/result" >
+    Order ID: <input type="text" name = 'oid' value = {{oid}}>
+    <br>
+    Customer ID:
+    <select name = 'custid'>
+        <option value= {{custid}}>{{custid}}</option>
+    </select>
+    <br>
+    Item ID:
+    <select name = "id">
+        <option value = {{id}}>{{id}}</option>
+    </select>
+    <br>
+    Size:
+    <select name = "size">
+        <option value = {{size}}>{{size}}</option>
+    </select>
+    <br>
+    Colors:
+    <select name = "color">
+        {% for row in col %}
+        <option value = {{row}}>{{row}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <input type = "submit" value= "Check">
+    </form>
+
+
+</html>
