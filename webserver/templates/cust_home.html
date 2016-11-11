@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<h1>Customer Information</h1>
+<p><a href="/">Back to Homepage </a></p>
+
+<p><b>We have {{total}} customers by now!</b></p>
+
+
+<p><b>Customer you want to search: </b></p>
+<form method = "POST" action = "/Customer" >
+    Customer ID:
+    <select name="id">
+        {% for row in custid %}
+        <option value= {{row}}>{{row}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <input type="submit" value= "Search">
+</form>
+
+<br>
+<p><b>Add Customer: </b></p>
+<form method = "POST" action = "/add_cust">
+    ID:<input type = "int", name = "ID">
+    <br>
+    Name(First Last): <input type = "text", name = "name">
+    <br>
+    Email:<input type = "text", name = "email">
+    <br>
+    Password: <input type = "int", name = "password">
+    <br>
+    Date of birth(Y-M-D): <input type = "date", name = "dob">
+    <br>
+    Gender(Male/Female): <input type = "text", name = "gender">
+    <br>
+    Phone: <input type = "int", name = "phone">
+    <br>
+    Address: <input type = "text", name = "address">
+    <br>
+    <input type = "submit", value = "add">
+</form>
+</html>

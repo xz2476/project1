@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<h1>Log an order:</h1>
+
+<p><a href="/">Back to Homepage </a></p>
+
+<form method="post" action="/log_order/next">
+    New Order ID:
+    <input type="text" name = 'oid' value={{oid_new}}>
+    <br>
+    Customer ID:
+    <select name = 'cid'>
+        {% for row in custlist %}
+        <option value={{row}}>{{row}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <input type="submit" value="Next">
+</form>
+</html>

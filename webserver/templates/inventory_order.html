@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<h1> Process Order</h1>
+
+<p><a href="/Inventory/check">Back to Previous Page </a></p>
+<p><a href="/">Back to Homepage </a></p>
+
+<p><b>Item you want to order: </b></p>
+<div>Item ID: {{id}}</div>
+<div>Size:  {{size}}</div>
+<div>Color: {{color}}</div>
+
+<p><b>Inventory for such item:</b></p>
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 6px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover{background-color:#f5f5f5}
+</style>
+<table>
+    <tr>
+      <th>Quantity in Stock </th>
+      <th>Warehouse Name</th>
+      <th>Warehouse Manager</th>
+      <th>Warehouse Contact phone</th>
+      <th>Warehouse address</th>
+    </tr>
+    {% for row in storage %}
+    <tr>
+      <td>{{ row[0]|tojson|safe }}</td>
+      <td>{{ row[1]|tojson|safe}}</td>
+      <td>{{ row[2]|tojson|safe}}</td>
+      <td>{{ row[3]|tojson|safe}}</td>
+      <td>{{ row[4]}}</td>
+    </tr>
+{% endfor %}
+
+  </table>
+
+

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<h1> Inventory</h1>
+<p><a href="/Inventory">Back to "Inventory check" Page </a></p>
+<p><a href="/">Back to Homepage </a></p>
+
+<p><b>Item you want to check: </b></p>
+
+<form method = "POST" action = "/Inventory/result" >
+    Item ID:
+    <select name = "id">
+        <option value = {{id}}>{{id}}</option>
+    </select>
+    <br>
+    Size:
+    <select name = "size">
+        <option value = {{size}}>{{size}}</option>
+    </select>
+    <br>
+    Colors:
+    <select name = "color">
+        {% for row in col %}
+        <option value = {{row}}>{{row}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <input type = "submit" value= "Check">
+    </form>
+
+
+</html>
