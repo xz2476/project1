@@ -4,10 +4,15 @@ from sqlalchemy import *
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
 from datetime import datetime
+from wtforms import TextField, BooleanField, PasswordField, IntegerField,SelectField,StringField, TextAreaField, DateField
+from flask_wtf import Form
+from wtforms.validators import *
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 print os.getcwd()
+app.secret_key = 'just a key'
+
 
 DATABASEURI = "postgresql://xz2476:5rwzh@104.196.175.120/postgres"
 engine = create_engine(DATABASEURI)
@@ -34,46 +39,63 @@ def homepage():
   return render_template("homepage.html")
 
 #Customer:
+class searchcust(Form):
+  custid = SelectField("Customer ID: ",validators=[DataRequired()],coerce = str)
+
+class addcust(Form):
+  name = StringField('Name',validators=[InputRequired()])
+  email = StringField('Email',validators=[InputRequired()])
+  password = StringField('Password',validators=[InputRequired()])
+  dob = DateField('Date of Birth(Y-m-d)',validators=[InputRequired()],format='%Y-%m-%d')
+  gender = SelectField('Gender(Female/Male)',validators=[InputRequired()],choices = [('Female','Female'),('Male','Male')])
+  phone = IntegerField('Phone', validators=[InputRequired(),NumberRange(min=1000000000,max=9999999999,message="Phone number should be 10 digits(no space)")])
+  address = StringField('Address',validators=[InputRequired()])
+
 @app.route('/Customer',methods = ['GET','POST'])
 def search():
   total= g.conn.execute("SELECT count(*) FROM customer;")
   for row in total:
     t = row[0]
+  form = searchcust()
   custid = []
-  custlist = g.conn.execute("select distinct(customerid) from customer order by customerid ASC;")
+  custlist = engine.execute("select distinct(customerid) from customer order by customerid ASC;")
   for row in custlist:
-    custid.append(row[0])
+    custid.append(str(row[0]))
+  form.custid.choices = zip(custid,custid)
+  list = []
+  order = []
+  if form.validate_on_submit():
+        id = form.custid.data
+        info = g.conn.execute("SELECT * FROM customer WHERE customerid = %s", (id))
+        for row in info:
+           list.append(row)
+        orders = g.conn.execute("SELECT * FROM orderdetail WHERE customerid = %s", (id))
+        for row in orders:
+          order.append(row)
+        return render_template("cust_home.html", total=t, form = form, customer=list, order = order)
 
-  if request.method == 'POST':
-    id = str(request.form['id'])
-    info = g.conn.execute("SELECT * FROM customer WHERE customerid = %s", (id))
-    list = []
-    for row in info:
-      list.append(row)
-    orders = g.conn.execute("SELECT * FROM orderdetail WHERE customerid = %s", (id))
-    order = []
-    for row in orders:
-      order.append(row)
-    return render_template("customer.html", customer=list, order=order)
-
-  return render_template("cust_home.html",total = t,custid = custid)
+  return render_template("cust_home.html", total=t, form = form, customer=list, order = order)
 
 
 #add customer:
-@app.route('/add_cust', methods= ['Post','GET'])
+@app.route('/Customer/add', methods= ['Post','GET'])
 def add():
-  if request.method == "POST":
-      id = request.form['ID']
-      name = request.form['name']
-      email = request.form['email']
-      password = request.form['password']
-      dob = str(request.form['dob'])
-      gender = request.form['gender']
-      phone = request.form['phone']
-      address = request.form['address']
-  #generate id:
-      g.conn.execute( "INSERT INTO customer VALUES (%s,%s,%s,%s,%s,%s,%s,%s);",(id),(name),(email),(password),(dob),(gender),(phone),(address))
-      return redirect('/Customer')
+  form = addcust()
+  if form.validate_on_submit():
+    id = 0
+    curid = g.conn.execute("select max(customerid) from customer;")
+    for row in curid:
+      id = row[0] + 1
+    name = form.name.data
+    email = form.email.data
+    password = form.password.data
+    dob = form.dob.data
+    gender = form.gender.data
+    phone = form.phone.data
+    address = form.address.data
+    g.conn.execute( "INSERT INTO customer VALUES (%s,%s,%s,%s,%s,%s,%s,%s);",(id),(name),(email),(password),(dob),(gender),(phone),(address))
+    return redirect('/Customer/add')
+  return render_template("customer_add.html",form = form)
 
 #Check inventory before any orders:
 @app.route('/Inventory',methods=['GET','POST'])

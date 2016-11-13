@@ -8,35 +8,95 @@
 
 <p><b>Customer you want to search: </b></p>
 <form method = "POST" action = "/Customer" >
-    Customer ID:
-    <select name="id">
-        {% for row in custid %}
-        <option value= {{row}}>{{row}}</option>
-        {% endfor %}
-    </select>
-    <br>
+    {{ form.csrf_token }}
+    Customer ID: {{form.custid()}}
     <input type="submit" value= "Search">
 </form>
-
 <br>
-<p><b>Add Customer: </b></p>
-<form method = "POST" action = "/add_cust">
-    ID:<input type = "int", name = "ID">
-    <br>
-    Name(First Last): <input type = "text", name = "name">
-    <br>
-    Email:<input type = "text", name = "email">
-    <br>
-    Password: <input type = "int", name = "password">
-    <br>
-    Date of birth(Y-M-D): <input type = "date", name = "dob">
-    <br>
-    Gender(Male/Female): <input type = "text", name = "gender">
-    <br>
-    Phone: <input type = "int", name = "phone">
-    <br>
-    Address: <input type = "text", name = "address">
-    <br>
-    <input type = "submit", value = "add">
-</form>
+
+{% if customer %}
+<p><b>Information for customer {{customer[0][0]}}: </b></p>
+
+<style type="text/css">
+dl {
+  width: 100%;
+  overflow: hidden;
+  padding: 0;
+  margin: 0
+}
+dt {
+  float: left;
+  width: 20%;
+  /* adjust the width; make sure the total of both is 100% */
+  padding: 0;
+  margin: 0
+}
+dd {
+  float: left;
+  width: 80%;
+  /* adjust the width; make sure the total of both is 100% */
+  padding: 0;
+  margin: 0
+}
+
+</style>
+
+<dl >
+  <dt>Name: </dt> <dd>{{customer[0][1]}}</dd>
+  <dt>Email:    </dt> <dd>{{customer[0][2]}}</dd>
+  <dt>Password: </dt> <dd>{{customer[0][3]}}</dd>
+  <dt>Date of Birth:    </dt> <dd>{{customer[0][4]}}</dd>
+  <dt>Gender:   </dt> <dd>{{customer[0][5]}}</dd>
+  <dt>Phone:    </dt> <dd>{{customer[0][6]}}</dd>
+  <dt>Address:  </dt> <dd>{{customer[0][7]}}</dd>
+</dl>
+
+
+<p><b>Order history for customer {{customer[0][0]}}:</b></p>
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 6px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover{background-color:#f5f5f5}
+</style>
+<table>
+    <tr>
+      <th>OrderID</th>
+      <th>Time </th>
+      <th>Status</th>
+      <th>Item ID</th>
+      <th>Size</th>
+      <th>Color</th>
+      <th>Discount</th>
+      <th>Quantity</th>
+    </tr>
+    {% for row in order %}
+    <tr>
+      <td>{{ row[0]|tojson|safe }}</td>
+      <td>{{ row[2]|tojson|safe}}</td>
+      <td>{{ row[3]|tojson|safe}}</td>
+      <td>{{ row[4]|tojson|safe}}</td>
+      <td>{{ row[5]|tojson|safe}}</td>
+      <td>{{ row[6]|tojson|safe}}</td>
+      <td>{{ row[7]|tojson|safe}}</td>
+      <td>{{ row[8]}}</td>
+    </tr>
+{% endfor %}
+
+  </table>
+{% endif %}
+<p><a href="/log_order" >Make an Order</p>
+<p><a href="/Order/return">Return an Order</a></p>
+<br>
+
+<p><a href="/Customer/add">Add a NEW customer!</a></p>
+
 </html>
