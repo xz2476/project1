@@ -142,6 +142,22 @@ def inventory_result( ):
 
     return render_template("inventory_result.html", storage=storage,  size = size, id=id, color = color,wdist = wdist)
 
+@app.route('/market',methods=['get','post'])
+def market():
+      mon = request.form['month']
+      stat_p = "select itemid, size, color, sum(quantity) as sum from orderdetail where EXTRACT(MONTH FROM time) = %s group by itemid, size, color order by sum DESC;"
+      popular = []
+      populars = g.conn.execute(stat_p, (mon))
+      for n in populars:
+          popular.append(list(n))
+
+      stat_d = "select designer, sum(quantity)as sum_qun,sum(quantity*discount*price) as sum_rev from orderdetail o,products p where o.itemid = p.itemid and o.size = p.size and o.color=p.color and EXTRACT(MONTH FROM time) = %s group by designer order by sum_rev DESC;"
+      designer = []
+      designers = g.conn.execute(stat_d,(mon))
+      for n in designers:
+        designer.append(list(n))
+      return render_template("market.html",popular=popular,designer = designer)
+
 @app.route('/log_order',methods=['get','post'])
 def log_order():
   oid_new = 0
@@ -369,10 +385,9 @@ if __name__ == "__main__":
   @click.argument('HOST', default='0.0.0.0')
   @click.argument('PORT', default=8111, type=int)
   def run(debug, threaded, host, port):
-
     HOST, PORT = host, port
     print "running on %s:%d" % (HOST, PORT)
-    print "done"
     app.run(host=HOST, port=PORT, debug=debug, threaded=threaded)
+
 
   run()
